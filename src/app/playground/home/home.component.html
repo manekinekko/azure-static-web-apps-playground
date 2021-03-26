@@ -1,6 +1,16 @@
-<div>
-  <textarea name="swaConfigRules" #swaConfig (input)="onSwaConfigRulesChanged(swaConfig.value)" cols="30" rows="10">
+<div
+  class="uploadfilecontainer"
+  appDragDrop
+  (onFileDropped)="uploadFile($event)"
+>
+  <textarea
+    name="swaConfigRules"
+    placeholder="Paste your configuration file or drop it here..."
+    #swaConfig
+    (input)="onSwaConfigRulesChanged(swaConfig.value)"
+    [value]="swaConfigRules"
+  >
 test</textarea
   >
-  <pre>{{swaConfigRulesResulsts}}</pre>
+  <pre>{{ swaConfigRulesResulsts }}</pre>
 </div>

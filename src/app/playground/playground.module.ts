@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { DragDropDirective } from './drag-drop.directive';
 
 export const routes: Route[] = [
   {
@@ -11,7 +12,7 @@ export const routes: Route[] = [
 ];
 
 @NgModule({
-  declarations: [HomeComponent],
+  declarations: [HomeComponent, DragDropDirective],
   imports: [CommonModule, RouterModule.forChild(routes)],
 })
 export class PlaygroundModule {}

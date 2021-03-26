@@ -6,8 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  swaConfigRules = 'test';
-  swaConfigRulesResulsts = 'test';
+  swaConfigRules = '';
+  swaConfigRulesResulsts = '';
+  files: any = [];
 
   constructor() {}
 
@@ -15,5 +16,21 @@ export class HomeComponent implements OnInit {
 
   onSwaConfigRulesChanged(value: string) {
     this.swaConfigRulesResulsts = value;
+  }
+
+  uploadFile(files: FileList) {
+    const file = files?.item(0);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.swaConfigRules = e.target?.result;
+        console.log({ e: this.swaConfigRules });
+      };
+      reader.readAsText(file);
+    }
+  }
+  deleteAttachment(index: number) {
+    this.files.splice(index, 1);
   }
 }
