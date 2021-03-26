@@ -25,7 +25,6 @@ export class HomeComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.swaConfigRules = e.target?.result;
-        console.log({ e: this.swaConfigRules });
       };
       reader.readAsText(file);
     }
