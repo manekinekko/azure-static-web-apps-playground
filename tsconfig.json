@@ -19,7 +19,8 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "typeRoots": ["node_modules/highlight.js/types"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

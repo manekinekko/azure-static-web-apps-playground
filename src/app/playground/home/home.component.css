@@ -1,0 +1,27 @@
+div {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: space-evenly;
+}
+
+textarea[name="swaConfigRules"] {
+  top: -1px;
+  position: relative;
+  resize: none;
+  height: 781px;
+}
+
+pre,
+textarea {
+  border: 1px solid #d0cfcf;
+  height: 100%;
+  width: 50%;
+  margin: 10px;
+  height: 780px;
+  display: inline-block;
+  padding: 10px;
+  overflow-y: scroll;
+  --webkit-scrollbar-color: rebeccapurple green;
+  --webkit-scrollbar-width: thin;
+}
