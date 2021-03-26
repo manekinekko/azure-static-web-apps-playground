@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 
 @Component({
   selector: 'app-home',
@@ -7,15 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   swaConfigRules = '';
-  swaConfigRulesResulsts = '';
+  swaConfigRulesResulsts: StaticWebApp | null = null;
   files: any = [];
 
-  constructor() {}
+  constructor(private readonly rules: RulesParserService) {}
 
   ngOnInit(): void {}
 
   onSwaConfigRulesChanged(value: string) {
-    this.swaConfigRulesResulsts = value;
+    this.parseRules(value);
   }
 
   uploadFile(files: FileList) {
@@ -24,12 +25,13 @@ export class HomeComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.swaConfigRules = e.target?.result;
+        this.parseRules(e.target?.result);
       };
       reader.readAsText(file);
     }
   }
-  deleteAttachment(index: number) {
-    this.files.splice(index, 1);
+  parseRules(content: string) {
+    this.swaConfigRules = content;
+    this.swaConfigRulesResulsts = this.rules.parse(this.swaConfigRules);
   }
 }
