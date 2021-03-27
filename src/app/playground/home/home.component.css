@@ -1,26 +1,69 @@
-div {
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+main {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
   align-items: start;
   justify-content: space-evenly;
 }
 
-textarea[name="swaConfigRules"] {
-  top: -1px;
-  position: relative;
-  resize: none;
-  height: 781px;
-}
-
-pre,
-textarea {
-  border: 1px solid #d0cfcf;
+section {
   height: 100%;
-  width: 50%;
-  margin: 10px;
-  height: 780px;
   display: inline-block;
   padding: 10px;
   overflow-y: scroll;
+  overflow: hidden;
+}
+
+.mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-drawer-container,
+.mat-drawer-content {
+  height: 100%;
+}
+
+.mat-drawer {
+  width: 570px;
+}
+
+.mat-drawer section {
+  width: calc(100% - 4px);
+  padding: 0px;
+}
+
+.mat-drawer textarea[name="swaConfigRules"] {
+  top: -1px;
+  position: relative;
+  resize: none;
+  height: 100%;
+  width: calc(100% - 20px);
   background-color: white;
+  padding: 10px;
+}
+
+.toggle-code-editor {
+  position: absolute;
+  transform: rotate(-90deg);
+  top: 50%;
+  left: -68px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  padding: 10px 30px;
+  border-radius: 0 0 16px 16px;
+  color: #8e8e8e;
+}
+
+.content {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
 }

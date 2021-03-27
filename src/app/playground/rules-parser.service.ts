@@ -46,12 +46,6 @@ export class RulesParserService {
   constructor() {}
 
   parse(config: string): StaticWebApp | null {
-    try {
-      const configObject = JSON.parse(config) as StaticWebApp;
-      return configObject;
-    } catch (error) {
-      console.error(error);
-    }
-    return null;
+      return JSON.parse(config) as StaticWebApp;
   }
 }

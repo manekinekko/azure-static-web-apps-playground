@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 
 @Component({
@@ -8,15 +9,26 @@ import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 })
 export class HomeComponent implements OnInit {
   swaConfigRules = '';
+  swaConfigRulesError = '';
   swaConfigRulesResulsts: StaticWebApp | null = null;
   files: any = [];
 
-  constructor(private readonly rules: RulesParserService) {}
+  constructor(
+    private readonly rules: RulesParserService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {}
 
   onSwaConfigRulesChanged(value: string) {
     this.parseRules(value);
+  }
+
+  showMessage(message: string) {
+    this.snackBar.open(message, 'Got it', {
+      horizontalPosition: 'end',
+      verticalPosition: 'bottom',
+    });
   }
 
   uploadFile(files: FileList) {
@@ -31,7 +43,11 @@ export class HomeComponent implements OnInit {
     }
   }
   parseRules(content: string) {
-    this.swaConfigRules = content;
-    this.swaConfigRulesResulsts = this.rules.parse(this.swaConfigRules);
+    try {
+      this.swaConfigRules = content;
+      this.swaConfigRulesResulsts = this.rules.parse(this.swaConfigRules);
+    } catch (error) {
+      this.showMessage(error.message);
+    }
   }
 }
