@@ -1,4 +1,8 @@
-<mat-drawer-container autosize appDragDrop (onFileDropped)="processConfigFile($event)">
+<mat-drawer-container
+  autosize
+  appDragDrop
+  (onFileDropped)="processConfigFile($event)"
+>
   <mat-drawer #drawer mode="side">
     <section>
       <ngx-monaco-editor
@@ -14,21 +18,21 @@
     <button
       class="toggle-code-editor"
       type="button"
-      *ngIf="swaConfigRulesResulsts"
+      *ngIf="swaConfigRulesObject"
       mat-button
       (click)="drawer.toggle()"
     >
       Open code editor
     </button>
 
-    <section class="upload-indicator" *ngIf="!swaConfigRulesResulsts">
+    <section class="upload-indicator" *ngIf="!swaConfigRulesObject">
       <p>
         <mat-icon>cloud_upload</mat-icon>
       </p>
       <p>Drag and drop your staticwebapp.config.json file here</p>
     </section>
 
-    <section class="route-test-container" *ngIf="swaConfigRulesResulsts">
+    <section class="route-test-container" *ngIf="swaConfigRulesObject">
       <mat-form-field appearance="fill" class="route-test-method">
         <mat-label>Method</mat-label>
         <mat-select value="GET">
@@ -49,6 +53,7 @@
           autocomplete="off"
           matInput
           type="text"
+          (input)="onRouteInput(testRoute)"
           [(ngModel)]="testRoute"
         />
         <button
@@ -64,23 +69,41 @@
       </mat-form-field>
     </section>
 
-    <section class="routes-inspector" *ngIf="swaConfigRulesResulsts">
+    <section class="routes-inspector" *ngIf="swaConfigRulesObject">
       <mat-accordion multi>
-        <mat-expansion-panel *ngIf="swaConfigRulesResulsts?.routes">
+        <mat-expansion-panel *ngIf="swaConfigRulesObject?.routes">
           <mat-expansion-panel-header>
             <mat-panel-title>Routes</mat-panel-title>
             <mat-panel-description>
-              Found {{ swaConfigRulesResulsts?.$$size?.routes }} route rules
+              Found {{ swaConfigRulesObject?.$$size?.routes }} route rules
               <mat-icon>format_list_numbered</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
           <mat-list>
-            <mat-list-item *ngFor="let route of swaConfigRulesResulsts?.routes">
-              <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
+            <mat-list-item
+              *ngFor="
+                let route of swaConfigRulesObject?.routes;
+                let last = last
+              "
+              [ngClass]="{
+                'match-true': route.$$match === true,
+                'match-false': route.$$match === false
+              }"
+            >
+              <mat-icon mat-list-icon *ngIf="route.$$match === undefined"
+                >keyboard_arrow_right</mat-icon
+              >
+              <mat-icon mat-list-icon *ngIf="route.$$match === true"
+                >check</mat-icon
+              >
+              <mat-icon mat-list-icon *ngIf="route.$$match === false"
+                >close</mat-icon
+              >
+
               <div mat-line>{{ route.route }}</div>
               <div mat-line *ngIf="route.statusCode">
-                Response Status Code <b>{{ route.statusCode }}</b>
+                Responde with code <b>{{ route.statusCode }}</b>
               </div>
               <div mat-line *ngIf="route.rewrite">
                 Rewrite to <b>{{ route.rewrite }}</b>
@@ -89,45 +112,49 @@
                 Redirect to <b>{{ route.redirect }}</b>
               </div>
               <div mat-line *ngIf="route.headers">
-                Headers added <b>{{ route.headers | json }}</b>
+                Add headers <br />
+                <b *ngFor="let header of route.headers | keyvalue"
+                  >&nbsp;&nbsp;{{ header.key }}: {{ header.value }}</b
+                >
               </div>
               <div mat-line *ngIf="route.allowedRoles">
-                Authorized for <b>{{ route.allowedRoles }}</b>
+                Authorize for <b>{{ route.allowedRoles }}</b>
               </div>
               <div mat-line *ngIf="route.methods">
                 Methods <b>{{ route.methods }}</b>
               </div>
+              <mat-divider *ngIf="!last"></mat-divider>
             </mat-list-item>
           </mat-list>
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="swaConfigRulesResulsts?.navigationFallback">
+        <mat-expansion-panel *ngIf="swaConfigRulesObject?.navigationFallback">
           <mat-expansion-panel-header>
             <mat-panel-title>Fallback routes</mat-panel-title>
             <mat-panel-description>
               Fallback routes to&nbsp;
-              {{ swaConfigRulesResulsts?.navigationFallback?.rewrite }}
+              {{ swaConfigRulesObject?.navigationFallback?.rewrite }}
               <mat-icon>rule</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
           <p>
             Rewrite all routes to
-            <b>{{ swaConfigRulesResulsts?.navigationFallback?.rewrite }}</b
+            <b>{{ swaConfigRulesObject?.navigationFallback?.rewrite }}</b
             >.
           </p>
           <p>
             Except files that match
-            <b>{{ swaConfigRulesResulsts?.navigationFallback?.exclude }}</b
+            <b>{{ swaConfigRulesObject?.navigationFallback?.exclude }}</b
             >.
           </p>
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="swaConfigRulesResulsts?.globalHeaders">
+        <mat-expansion-panel *ngIf="swaConfigRulesObject?.globalHeaders">
           <mat-expansion-panel-header>
             <mat-panel-title>Global headers</mat-panel-title>
             <mat-panel-description>
-              Found {{ swaConfigRulesResulsts?.$$size?.globalHeaders }} headers
+              Found {{ swaConfigRulesObject?.$$size?.globalHeaders }} headers
               <mat-icon>http</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
@@ -135,7 +162,7 @@
           <mat-list>
             <mat-list-item
               *ngFor="
-                let header of swaConfigRulesResulsts?.globalHeaders | keyvalue
+                let header of swaConfigRulesObject?.globalHeaders | keyvalue
               "
             >
               <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
@@ -147,12 +174,12 @@
           </mat-list>
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="swaConfigRulesResulsts?.responseOverrides">
+        <mat-expansion-panel *ngIf="swaConfigRulesObject?.responseOverrides">
           <mat-expansion-panel-header>
             <mat-panel-title>Response overrides</mat-panel-title>
             <mat-panel-description>
               Found
-              {{ swaConfigRulesResulsts?.$$size?.responseOverrides }} overrides
+              {{ swaConfigRulesObject?.$$size?.responseOverrides }} overrides
               <mat-icon>account_tree</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
@@ -160,7 +187,7 @@
           <mat-list>
             <mat-list-item
               *ngFor="
-                let response of swaConfigRulesResulsts?.responseOverrides
+                let response of swaConfigRulesObject?.responseOverrides
                   | keyvalue
               "
             >

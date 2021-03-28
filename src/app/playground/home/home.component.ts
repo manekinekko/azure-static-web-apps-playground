@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { RulesMatcherService } from '../rules-matcher.service';
 import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 
 @Component({
@@ -10,7 +11,7 @@ import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 })
 export class HomeComponent implements OnInit {
   swaConfigRules = '';
-  swaConfigRulesResulsts: StaticWebApp | null = null;
+  swaConfigRulesObject: StaticWebApp | undefined = undefined;
 
   editorOptions = { theme: 'vs-dark', language: 'json' };
 
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly rules: RulesParserService,
+    private readonly matcher: RulesMatcherService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute
   ) {}
@@ -60,7 +62,7 @@ export class HomeComponent implements OnInit {
   parseRules(content: string) {
     try {
       this.swaConfigRules = content;
-      this.swaConfigRulesResulsts = this.rules.parse(this.swaConfigRules);
+      this.swaConfigRulesObject = this.rules.parse(this.swaConfigRules);
     } catch (error) {
       console.error(error);
       this.showMessage(error.message);
@@ -69,5 +71,12 @@ export class HomeComponent implements OnInit {
 
   syncConfigContentWithUrlHash(fileContent: string) {
     document.location.hash = `c=${window.btoa(fileContent)}`;
+  }
+
+  onRouteInput(route: string) {
+    this.matcher.reset(this.swaConfigRulesObject);
+    if (route) {
+      this.matcher.matchRoutes(route, this.swaConfigRulesObject?.routes);
+    }
   }
 }

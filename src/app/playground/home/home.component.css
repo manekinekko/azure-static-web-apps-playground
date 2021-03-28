@@ -115,3 +115,11 @@ section {
   top: -2px;
   position: relative;
 }
+
+.match-true {
+  color: green;
+}
+
+.match-false {
+  color: gray;
+}

@@ -4,6 +4,7 @@ export type ResponseOverrideCode = '400' | '401' | '403' | '404';
 
 export interface StaticWebApp {
   routes: Array<{
+    $$match: boolean | undefined;
     route: string;
     rewrite?: string;
     redirect?: string;
@@ -26,6 +27,7 @@ export interface StaticWebApp {
   navigationFallback: {
     rewrite: string;
     exclude: string[];
+    $$match: boolean | undefined;
   };
 
   globalHeaders: { [header: string]: string };
@@ -51,13 +53,17 @@ export interface StaticWebApp {
 export class RulesParserService {
   constructor() {}
 
-  parse(config: string): StaticWebApp | null {
+  parse(config: string): StaticWebApp | undefined {
     const parsedConfig = JSON.parse(config) as StaticWebApp;
 
     parsedConfig.$$size = {
       routes: parsedConfig.routes?.length,
-      globalHeaders: parsedConfig.globalHeaders && Object.keys(parsedConfig.globalHeaders).length,
-      responseOverrides: parsedConfig.responseOverrides && Object.keys(parsedConfig.responseOverrides).length,
+      globalHeaders:
+        parsedConfig.globalHeaders &&
+        Object.keys(parsedConfig.globalHeaders).length,
+      responseOverrides:
+        parsedConfig.responseOverrides &&
+        Object.keys(parsedConfig.responseOverrides).length,
     };
 
     return parsedConfig;
