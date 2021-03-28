@@ -9,7 +9,7 @@ main {
   height: 100%;
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: flex-start;
   justify-content: space-evenly;
 }
 
@@ -36,7 +36,7 @@ section {
 }
 
 .mat-drawer section {
-  width: calc(100% - 4px);
+  width: 100%;
   padding: 0px;
 }
 

@@ -13,6 +13,8 @@ export class HomeComponent implements OnInit {
   swaConfigRulesResulsts: StaticWebApp | null = null;
   files: any = [];
 
+  editorOptions = { theme: 'vs-dark', language: 'json' };
+
   constructor(
     private readonly rules: RulesParserService,
     private snackBar: MatSnackBar

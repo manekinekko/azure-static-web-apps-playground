@@ -10,7 +10,8 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSidenavModule} from '@angular/material/sidenav';
-
+import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { FormsModule } from '@angular/forms';
 
 const MAT_MODULES = [MatSidenavModule, MatExpansionModule, MatListModule,MatSnackBarModule, MatIconModule, MatDividerModule];
 
@@ -23,6 +24,6 @@ export const routes: Route[] = [
 
 @NgModule({
   declarations: [HomeComponent, DragDropDirective],
-  imports: [CommonModule, RouterModule.forChild(routes), ...MAT_MODULES],
+  imports: [FormsModule, MonacoEditorModule, CommonModule, RouterModule.forChild(routes), ...MAT_MODULES],
 })
 export class PlaygroundModule {}

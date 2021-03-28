@@ -20,7 +20,8 @@
       "es2018",
       "dom"
     ],
-    "typeRoots": ["node_modules/highlight.js/types"]
+    "typeRoots": ["node_modules/highlight.js/types"],
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,13 +1,14 @@
 <mat-drawer-container autosize appDragDrop (onFileDropped)="uploadFile($event)">
   <mat-drawer #drawer mode="side">
     <section>
-      <textarea
+      <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="swaConfigRules"></ngx-monaco-editor>
+      <!-- <textarea
         name="swaConfigRules"
         placeholder="Paste your configuration file or drop it here..."
         #swaConfig
         (input)="onSwaConfigRulesChanged(swaConfig.value)"
         [value]="swaConfigRules"
-      ></textarea>
+      ></textarea> -->
     </section>
   </mat-drawer>
 
