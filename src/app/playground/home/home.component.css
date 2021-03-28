@@ -67,3 +67,18 @@ section {
   align-items: baseline;
   justify-content: center;
 }
+
+.upload-indicator {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  color: #aaa;
+  position: absolute;
+}
+
+.upload-indicator .mat-icon {
+  height: 64px;
+  font-size: 64px;
+  width: 64px;
+}

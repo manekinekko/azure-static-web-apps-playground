@@ -12,11 +12,24 @@
   </mat-drawer>
 
   <div class="content">
-    <button class="toggle-code-editor" type="button" *ngIf="swaConfigRulesResulsts" mat-button (click)="drawer.toggle()">
+    <button
+      class="toggle-code-editor"
+      type="button"
+      *ngIf="swaConfigRulesResulsts"
+      mat-button
+      (click)="drawer.toggle()"
+    >
       Open code editor
     </button>
 
-    <section>
+    <section class="upload-indicator" *ngIf="!swaConfigRulesResulsts">
+      <p>
+        <mat-icon>cloud_upload</mat-icon>
+      </p>
+      <p>Drag and drop your staticwebapp.config.json file here</p>
+    </section>
+
+    <section *ngIf="swaConfigRulesResulsts">
       <mat-accordion multi>
         <mat-expansion-panel *ngIf="swaConfigRulesResulsts?.routes">
           <mat-expansion-panel-header>

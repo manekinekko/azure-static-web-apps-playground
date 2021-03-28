@@ -14,21 +14,18 @@ export class DragDropDirective {
 
   @HostBinding('style.background-color') private background = '#fff';
 
-  //Dragover listener
   @HostListener('dragover', ['$event']) onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.background = '#eee';
+    this.background = '#f5f5f5';
   }
 
-  //Dragleave listener
   @HostListener('dragleave', ['$event']) public onDragLeave(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.background = '#fff';
   }
 
-  //Drop listener
   @HostListener('drop', ['$event']) public ondrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
