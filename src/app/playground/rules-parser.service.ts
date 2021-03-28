@@ -37,6 +37,12 @@ export interface StaticWebApp {
       redirect?: string;
     };
   };
+
+  $$size: {
+    globalHeaders: number;
+    responseOverrides: number;
+    routes: number;
+  };
 }
 
 @Injectable({
@@ -46,6 +52,14 @@ export class RulesParserService {
   constructor() {}
 
   parse(config: string): StaticWebApp | null {
-      return JSON.parse(config) as StaticWebApp;
+    const parsedConfig = JSON.parse(config) as StaticWebApp;
+
+    parsedConfig.$$size = {
+      routes: parsedConfig.routes.length,
+      globalHeaders: Object.keys(parsedConfig.globalHeaders).length,
+      responseOverrides: Object.keys(parsedConfig.responseOverrides).length,
+    };
+
+    return parsedConfig;
   }
 }

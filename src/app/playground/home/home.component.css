@@ -25,6 +25,10 @@ section {
   justify-content: space-between;
   align-items: center;
 }
+.mat-expansion-panel-header-title {
+  flex-grow: 0;
+  width: 160px;
+}
 
 .mat-drawer-container,
 .mat-drawer-content {
@@ -64,8 +68,17 @@ section {
 
 .content {
   display: flex;
-  align-items: baseline;
-  justify-content: center;
+  flex-direction: column;
+  padding: 0 60px;
+  align-items: stretch;
+}
+
+.mat-list-item {
+  height: 50px;
+}
+
+.routes-inspector {
+  padding: 0 10px 10px;
 }
 
 .upload-indicator {
@@ -74,11 +87,31 @@ section {
   flex-direction: column;
   align-items: center;
   color: #aaa;
-  position: absolute;
+  height: 300px
 }
 
 .upload-indicator .mat-icon {
   height: 64px;
   font-size: 64px;
   width: 64px;
+}
+
+.mat-form-field {
+  padding: 10px;
+}
+
+.route-test-container {
+  display: flex;
+  align-items: flex-end;
+  height: 100px;
+}
+
+.route-test-method {
+  width: 100px;
+}
+
+.route-test-input {
+  flex: 2;
+  top: -2px;
+  position: relative;
 }

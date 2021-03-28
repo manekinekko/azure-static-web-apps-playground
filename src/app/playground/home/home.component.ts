@@ -11,9 +11,10 @@ export class HomeComponent implements OnInit {
   swaConfigRules = '';
   swaConfigRulesError = '';
   swaConfigRulesResulsts: StaticWebApp | null = null;
-  files: any = [];
 
   editorOptions = { theme: 'vs-dark', language: 'json' };
+
+  testRoute = '';
 
   constructor(
     private readonly rules: RulesParserService,

@@ -28,14 +28,49 @@
       <p>Drag and drop your staticwebapp.config.json file here</p>
     </section>
 
-    <section *ngIf="swaConfigRulesResulsts">
+    <section class="route-test-container" *ngIf="swaConfigRulesResulsts">
+      <mat-form-field appearance="fill" class="route-test-method">
+        <mat-label>Method</mat-label>
+        <mat-select value="GET">
+          <mat-option value="GET">GET</mat-option>
+          <mat-option value="HEAD">HEAD</mat-option>
+          <mat-option value="POST">POST</mat-option>
+          <mat-option value="PUT">PUT</mat-option>
+          <mat-option value="DELETE">DELETE</mat-option>
+          <mat-option value="CONNECT">CONNECT</mat-option>
+          <mat-option value="OPTIONS">OPTIONS</mat-option>
+          <mat-option value="TRACE">TRACE</mat-option>
+          <mat-option value="PATCH">PATCH</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="route-test-input">
+        <mat-label>Test Route</mat-label>
+        <input
+          autocomplete="off"
+          matInput
+          type="text"
+          [(ngModel)]="testRoute"
+        />
+        <button
+          mat-button
+          *ngIf="testRoute"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="testRoute = ''"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </section>
+
+    <section class="routes-inspector" *ngIf="swaConfigRulesResulsts">
       <mat-accordion multi>
         <mat-expansion-panel *ngIf="swaConfigRulesResulsts?.routes">
           <mat-expansion-panel-header>
             <mat-panel-title>Routes</mat-panel-title>
             <mat-panel-description>
-              Found {{ swaConfigRulesResulsts?.routes?.length }} route
-              definitions
+              Found {{ swaConfigRulesResulsts?.$$size?.routes }} route rules
               <mat-icon>format_list_numbered</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
@@ -70,8 +105,9 @@
           <mat-expansion-panel-header>
             <mat-panel-title>Fallback routes</mat-panel-title>
             <mat-panel-description>
-              &nbsp;
-              <mat-icon>call_split</mat-icon>
+              Fallback routes to&nbsp;
+              {{ swaConfigRulesResulsts?.navigationFallback?.rewrite }}
+              <mat-icon>rule</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -81,7 +117,7 @@
             >.
           </p>
           <p>
-            Expect files that match
+            Except files that match
             <b>{{ swaConfigRulesResulsts?.navigationFallback?.exclude }}</b
             >.
           </p>
@@ -91,8 +127,8 @@
           <mat-expansion-panel-header>
             <mat-panel-title>Global headers</mat-panel-title>
             <mat-panel-description>
-              &nbsp;
-              <mat-icon>call_split</mat-icon>
+              Found {{ swaConfigRulesResulsts?.$$size?.globalHeaders }} headers
+              <mat-icon>http</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -105,7 +141,7 @@
               <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
               <div mat-line>
                 <span>{{ header.key }}</span>
-                <b>{{ header.value }}</b>
+                &nbsp;<b>{{ header.value }}</b>
               </div>
             </mat-list-item>
           </mat-list>
@@ -115,8 +151,9 @@
           <mat-expansion-panel-header>
             <mat-panel-title>Response overrides</mat-panel-title>
             <mat-panel-description>
-              &nbsp;
-              <mat-icon>call_split</mat-icon>
+              Found
+              {{ swaConfigRulesResulsts?.$$size?.responseOverrides }} overrides
+              <mat-icon>account_tree</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 

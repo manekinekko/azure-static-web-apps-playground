@@ -45,6 +45,7 @@ p {
 .toolbar .button-logo {
   height: 30px;
   margin: 0 8px;
+  color: white;
 }
 
 .toolbar .button-logo:hover {
