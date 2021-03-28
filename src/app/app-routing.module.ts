@@ -4,17 +4,17 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'playground',
+    redirectTo: 'p',
     pathMatch: 'full',
   },
   {
-    path: 'playground',
+    path: 'p',
     loadChildren: () =>
       import('./playground/playground.module').then((m) => m.PlaygroundModule),
   },
   {
     path: '**',
-    redirectTo: '/playground',
+    redirectTo: '/p',
   },
 ];
 

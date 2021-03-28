@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 
 @Component({
@@ -9,7 +10,6 @@ import { RulesParserService, StaticWebApp } from '../rules-parser.service';
 })
 export class HomeComponent implements OnInit {
   swaConfigRules = '';
-  swaConfigRulesError = '';
   swaConfigRulesResulsts: StaticWebApp | null = null;
 
   editorOptions = { theme: 'vs-dark', language: 'json' };
@@ -18,13 +18,21 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly rules: RulesParserService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const { fragment } = this.route.snapshot;
+    const [key, value] = fragment.split('=');
+    if (key === 'c') {
+      this.parseRules(window.atob(value));
+    }
+  }
 
   onSwaConfigRulesChanged(value: string) {
     this.parseRules(value);
+    this.syncConfigContentWithUrlHash(value);
   }
 
   showMessage(message: string) {
@@ -34,13 +42,16 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  uploadFile(files: FileList) {
+  processConfigFile(files: FileList) {
     const file = files?.item(0);
 
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.parseRules(e.target?.result);
+        const fileContent = e.target?.result;
+        this.syncConfigContentWithUrlHash(fileContent);
+
+        this.parseRules(fileContent);
       };
       reader.readAsText(file);
     }
@@ -52,5 +63,9 @@ export class HomeComponent implements OnInit {
     } catch (error) {
       this.showMessage(error.message);
     }
+  }
+
+  syncConfigContentWithUrlHash(fileContent: string) {
+    document.location.hash = `c=${window.btoa(fileContent)}`;
   }
 }
