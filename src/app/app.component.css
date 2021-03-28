@@ -40,6 +40,7 @@ p {
 
 .toolbar img {
   margin: 0 16px;
+  width: 32px;
 }
 
 .toolbar .button-logo {

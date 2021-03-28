@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit {
     this.snackBar.open(message, 'Got it', {
       horizontalPosition: 'end',
       verticalPosition: 'bottom',
+      duration: 5000
     });
   }
 
@@ -61,6 +62,7 @@ export class HomeComponent implements OnInit {
       this.swaConfigRules = content;
       this.swaConfigRulesResulsts = this.rules.parse(this.swaConfigRules);
     } catch (error) {
+      console.error(error);
       this.showMessage(error.message);
     }
   }

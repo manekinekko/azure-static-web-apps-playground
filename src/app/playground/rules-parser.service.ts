@@ -55,9 +55,9 @@ export class RulesParserService {
     const parsedConfig = JSON.parse(config) as StaticWebApp;
 
     parsedConfig.$$size = {
-      routes: parsedConfig.routes.length,
-      globalHeaders: Object.keys(parsedConfig.globalHeaders).length,
-      responseOverrides: Object.keys(parsedConfig.responseOverrides).length,
+      routes: parsedConfig.routes?.length,
+      globalHeaders: parsedConfig.globalHeaders && Object.keys(parsedConfig.globalHeaders).length,
+      responseOverrides: parsedConfig.responseOverrides && Object.keys(parsedConfig.responseOverrides).length,
     };
 
     return parsedConfig;
