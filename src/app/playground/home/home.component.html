@@ -62,7 +62,7 @@
           matSuffix
           mat-icon-button
           aria-label="Clear"
-          (click)="testRoute = ''"
+          (click)="clearTestRoute()"
         >
           <mat-icon>close</mat-icon>
         </button>
@@ -71,7 +71,10 @@
 
     <section class="routes-inspector" *ngIf="swaConfigRulesObject">
       <mat-accordion multi>
-        <mat-expansion-panel *ngIf="swaConfigRulesObject?.routes">
+        <mat-expansion-panel
+          *ngIf="swaConfigRulesObject?.routes"
+          #expansionPanelRouteRules
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>Routes</mat-panel-title>
             <mat-panel-description>
@@ -90,6 +93,7 @@
                 'match-true': route.$$match === true,
                 'match-false': route.$$match === false
               }"
+              id="route-rule-{{ route.$$id }}"
             >
               <mat-icon mat-list-icon *ngIf="route.$$match === undefined"
                 >keyboard_arrow_right</mat-icon

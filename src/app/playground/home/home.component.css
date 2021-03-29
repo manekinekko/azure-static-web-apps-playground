@@ -117,9 +117,9 @@ section {
 }
 
 .match-true {
-  color: green;
+  color: rgb(53, 155, 53);
 }
 
 .match-false {
-  color: gray;
+  color: rgb(247, 62, 62);
 }

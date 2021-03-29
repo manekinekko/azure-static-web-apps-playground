@@ -2,27 +2,30 @@ import { Injectable } from '@angular/core';
 
 export type ResponseOverrideCode = '400' | '401' | '403' | '404';
 
-export interface StaticWebApp {
-  routes: Array<{
-    $$match: boolean | undefined;
-    route: string;
-    rewrite?: string;
-    redirect?: string;
-    allowedRoles?: string[];
-    headers: { [header: string]: string };
-    statusCode: number;
-    methods: Array<
-      | 'GET'
-      | 'HEAD'
-      | 'POST'
-      | 'PUT'
-      | 'DELETE'
-      | 'CONNECT'
-      | 'OPTIONS'
-      | 'TRACE'
-      | 'PATCH'
-    >;
-  }>;
+export type StaticWebAppRouteRule = {
+  $$match: boolean | undefined;
+  $$id: number;
+  route: string;
+  rewrite?: string;
+  redirect?: string;
+  allowedRoles?: string[];
+  headers: { [header: string]: string };
+  statusCode: number;
+  methods: Array<
+    | 'GET'
+    | 'HEAD'
+    | 'POST'
+    | 'PUT'
+    | 'DELETE'
+    | 'CONNECT'
+    | 'OPTIONS'
+    | 'TRACE'
+    | 'PATCH'
+  >;
+}
+
+export type StaticWebApp = {
+  routes: StaticWebAppRouteRule[];
 
   navigationFallback: {
     rewrite: string;
@@ -55,6 +58,8 @@ export class RulesParserService {
 
   parse(config: string): StaticWebApp | undefined {
     const parsedConfig = JSON.parse(config) as StaticWebApp;
+
+    parsedConfig.routes.forEach((route, index: number) => (route.$$id = index));
 
     parsedConfig.$$size = {
       routes: parsedConfig.routes?.length,

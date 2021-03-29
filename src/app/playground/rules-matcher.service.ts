@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StaticWebApp } from './rules-parser.service';
+import { StaticWebApp, StaticWebAppRouteRule } from './rules-parser.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,23 +16,24 @@ export class RulesMatcherService {
     }
   }
 
-  matchRoutes(route: string, rules: any[] | undefined) {
+  matchRoutes(route: string, rules: StaticWebAppRouteRule[] | undefined) {
+    if (!rules) return null;
+
     try {
-      route = route.replace('*', '.*');
-      const regex = new RegExp(`^${route}$`);
-      for (let index = 0; index <= rules?.length!; index++) {
-        const rule = rules?.[index];
-        if (rule) {
-          if (regex.test(rule.route)) {
-            rule.$$match = true;
-            return rule;
-          } else {
-            rule.$$match = false;
-          }
+      for (let index = 0; index < rules.length; index++) {
+        const rule = rules[index];
+        const ruleRegEx = new RegExp(`^${rule.route.replace('*', '.*')}$`);
+        if (ruleRegEx.test(route)) {
+          rule.$$match = true;
+          return rule;
+        } else {
+          rule.$$match = false;
         }
       }
       return null;
-    } catch {
+    } catch (e) {
+      console.error(e);
+
       return null;
     }
   }

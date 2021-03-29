@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { RulesMatcherService } from '../rules-matcher.service';
@@ -16,6 +17,9 @@ export class HomeComponent implements OnInit {
   editorOptions = { theme: 'vs-dark', language: 'json' };
 
   testRoute = '';
+
+  @ViewChild('expansionPanelRouteRules')
+  expansionPanelRouteRules: MatExpansionPanel;
 
   constructor(
     private readonly rules: RulesParserService,
@@ -41,7 +45,7 @@ export class HomeComponent implements OnInit {
     this.snackBar.open(message, 'Got it', {
       horizontalPosition: 'end',
       verticalPosition: 'bottom',
-      duration: 5000
+      duration: 5000,
     });
   }
 
@@ -73,10 +77,21 @@ export class HomeComponent implements OnInit {
     document.location.hash = `c=${window.btoa(fileContent)}`;
   }
 
+  clearTestRoute() {
+    this.matcher.reset(this.swaConfigRulesObject);
+    this.testRoute = '';
+  }
+
   onRouteInput(route: string) {
     this.matcher.reset(this.swaConfigRulesObject);
     if (route) {
-      this.matcher.matchRoutes(route, this.swaConfigRulesObject?.routes);
+      const matchedRule = this.matcher.matchRoutes(
+        route,
+        this.swaConfigRulesObject?.routes
+      );
+      if (matchedRule) {
+        this.expansionPanelRouteRules.open();
+      }
     }
   }
 }
