@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng run swa-playground:stamp",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -22,7 +22,6 @@
     "@angular/platform-browser-dynamic": "~11.2.7",
     "@angular/router": "~11.2.7",
     "@materia-ui/ngx-monaco-editor": "^5.0.0",
-    "highlight.js": "^10.7.1",
     "monaco-editor": "^0.23.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
@@ -35,6 +34,7 @@
     "@types/highlight.js": "^10.1.0",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
+    "@xlayers/version-stamp": "^1.0.2",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -44,6 +44,8 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "protractor": "~7.0.0",
+    "replace-in-file": "6.1.0",
+    "simple-git": "2.20.1",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.1.5"
