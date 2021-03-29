@@ -30,9 +30,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     const { fragment } = this.route.snapshot;
-    const [key, value] = fragment.split('=');
-    if (key === 'c') {
-      this.parseRules(window.atob(value));
+    if (fragment) {
+      const [key, value] = fragment.split('=');
+      if (key === 'c') {
+        this.parseRules(window.atob(value));
+      }
     }
   }
 
