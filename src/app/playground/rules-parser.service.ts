@@ -59,7 +59,7 @@ export class RulesParserService {
   parse(config: string): StaticWebApp | undefined {
     const parsedConfig = JSON.parse(config) as StaticWebApp;
 
-    parsedConfig.routes.forEach((route, index: number) => (route.$$id = index));
+    parsedConfig?.routes?.forEach((route, index: number) => (route.$$id = index));
 
     parsedConfig.$$size = {
       routes: parsedConfig.routes?.length,

@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     this.snackBar.open(message, 'Got it', {
       horizontalPosition: 'end',
       verticalPosition: 'bottom',
-      duration: 5000,
+      duration: 10000,
     });
   }
 
@@ -69,7 +69,12 @@ export class HomeComponent implements OnInit {
       this.swaConfigRulesObject = this.rules.parse(this.swaConfigRules);
     } catch (error) {
       console.error(error);
-      this.showMessage(error.message);
+
+      if (error.message.includes('Unexpected token')) {
+        this.showMessage(`Invalid JSON: ${error.message}`);
+      } else {
+        this.showMessage(error.message);
+      }
     }
   }
 
