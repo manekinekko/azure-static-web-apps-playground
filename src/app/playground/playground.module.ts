@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +22,7 @@ const MAT_MODULES = [
   MatExpansionModule,
   MatListModule,
   MatSnackBarModule,
+  MatChipsModule,
   MatIconModule,
   MatDividerModule,
 ];

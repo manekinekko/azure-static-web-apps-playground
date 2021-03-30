@@ -33,9 +33,9 @@
     </section>
 
     <section class="route-test-container" *ngIf="swaConfigRulesObject">
-      <mat-form-field appearance="fill" class="route-test-method">
+      <mat-form-field class="route-test-method">
         <mat-label>Method</mat-label>
-        <mat-select value="GET">
+        <mat-select [(ngModel)]="testMethod" (selectionChange)="onMethodInputChange($event)" aria-label="Test HTTP method">
           <mat-option value="GET">GET</mat-option>
           <mat-option value="HEAD">HEAD</mat-option>
           <mat-option value="POST">POST</mat-option>
@@ -47,13 +47,36 @@
           <mat-option value="PATCH">PATCH</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="route-test-input">
-        <mat-label>Test Route</mat-label>
+      <mat-form-field class="route-test-roles">
+        <mat-label>Roles</mat-label>
+        <mat-chip-list #chipList aria-label="Roles selection">
+          <mat-chip
+            *ngFor="let role of testRoles"
+            [removable]="true"
+            [selected]="role === 'anonymous' || role === 'authenticated'"
+            [color]="role === 'anonymous' || role === 'authenticated' ? 'accent' : 'primary'"
+            (removed)="removeRole(role)"
+          >
+            {{ role }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Role..."
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true"
+            (matChipInputTokenEnd)="addRole($event)"
+          />
+        </mat-chip-list>
+      </mat-form-field>
+      <mat-form-field class="route-test-route">
+        <mat-label>Route</mat-label>
         <input
           autocomplete="off"
+          aria-label="Test route"
           matInput
           type="text"
-          (input)="onRouteInput(testRoute)"
+          (input)="onRouteInputChange(testRoute)"
           [(ngModel)]="testRoute"
         />
         <button

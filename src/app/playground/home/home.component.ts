@@ -1,9 +1,16 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { RulesMatcherService } from '../rules-matcher.service';
-import { RulesParserService, StaticWebApp } from '../rules-parser.service';
+import {
+  RulesParserService,
+  StaticWebApp,
+  StaticWebAppRouteMethod,
+} from '../rules-parser.service';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +24,9 @@ export class HomeComponent implements OnInit {
   editorOptions = { theme: 'vs-dark', language: 'json' };
 
   testRoute = '';
+  testMethod: StaticWebAppRouteMethod = 'GET';
+  testRoles = ['anonymous', 'authenticated'];
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   @ViewChild('expansionPanelRouteRules')
   expansionPanelRouteRules: MatExpansionPanel;
@@ -89,16 +99,46 @@ export class HomeComponent implements OnInit {
     this.testRoute = '';
   }
 
-  onRouteInput(route: string) {
+  onRouteInputChange(route: string) {
     this.matcher.reset(this.swaConfigRulesObject);
     if (route) {
       const matchedRule = this.matcher.matchRoutes(
-        route,
+        { route, method: this.testMethod, roles: this.testRoles },
         this.swaConfigRulesObject?.routes
       );
       if (matchedRule) {
         this.expansionPanelRouteRules.open();
       }
     }
+  }
+
+  onMethodInputChange(event: MatSelectChange) {
+    this.testMethod = event.value;
+    this.onRouteInputChange(this.testRoute);
+  }
+
+  addRole(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = (event.value || '').trim();
+    if (value && !this.testRoles.includes(value)) {
+      this.testRoles.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+
+    this.onRouteInputChange(this.testRoute);
+  }
+
+  removeRole(role: string): void {
+    const index = this.testRoles.indexOf(role);
+
+    if (index >= 0) {
+      this.testRoles.splice(index, 1);
+    }
+
+    this.onRouteInputChange(this.testRoute);
   }
 }

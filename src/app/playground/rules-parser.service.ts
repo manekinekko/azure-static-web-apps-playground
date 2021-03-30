@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
 
 export type ResponseOverrideCode = '400' | '401' | '403' | '404';
+export type StaticWebAppRouteMethod =
+  | 'GET'
+  | 'HEAD'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'CONNECT'
+  | 'OPTIONS'
+  | 'TRACE'
+  | 'PATCH';
 
 export type StaticWebAppRouteRule = {
   $$match: boolean | undefined;
@@ -11,18 +21,8 @@ export type StaticWebAppRouteRule = {
   allowedRoles?: string[];
   headers: { [header: string]: string };
   statusCode: number;
-  methods: Array<
-    | 'GET'
-    | 'HEAD'
-    | 'POST'
-    | 'PUT'
-    | 'DELETE'
-    | 'CONNECT'
-    | 'OPTIONS'
-    | 'TRACE'
-    | 'PATCH'
-  >;
-}
+  methods: StaticWebAppRouteMethod[];
+};
 
 export type StaticWebApp = {
   routes: StaticWebAppRouteRule[];
@@ -48,7 +48,7 @@ export type StaticWebApp = {
     responseOverrides: number;
     routes: number;
   };
-}
+};
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +59,9 @@ export class RulesParserService {
   parse(config: string): StaticWebApp | undefined {
     const parsedConfig = JSON.parse(config) as StaticWebApp;
 
-    parsedConfig?.routes?.forEach((route, index: number) => (route.$$id = index));
+    parsedConfig?.routes?.forEach(
+      (route, index: number) => (route.$$id = index)
+    );
 
     parsedConfig.$$size = {
       routes: parsedConfig.routes?.length,
