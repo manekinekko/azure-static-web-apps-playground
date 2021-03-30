@@ -3,7 +3,7 @@
   appDragDrop
   (onFileDropped)="processConfigFile($event)"
 >
-  <mat-drawer #drawer mode="side">
+  <mat-drawer #drawer mode="side" fixedInViewport="false">
     <section>
       <ngx-monaco-editor
         [options]="editorOptions"
@@ -12,9 +12,6 @@
       >
       </ngx-monaco-editor>
     </section>
-  </mat-drawer>
-
-  <div class="content">
     <button
       class="toggle-code-editor"
       type="button"
@@ -22,9 +19,11 @@
       mat-button
       (click)="drawer.toggle()"
     >
-      Open code editor
+      Toggle code editor
     </button>
+  </mat-drawer>
 
+  <div class="content">
     <section class="upload-indicator" *ngIf="!swaConfigRulesObject">
       <p>
         <mat-icon>cloud_upload</mat-icon>
@@ -35,7 +34,11 @@
     <section class="route-test-container" *ngIf="swaConfigRulesObject">
       <mat-form-field class="route-test-method">
         <mat-label>Method</mat-label>
-        <mat-select [(ngModel)]="testMethod" (selectionChange)="onMethodInputChange($event)" aria-label="Test HTTP method">
+        <mat-select
+          [(ngModel)]="testMethod"
+          (selectionChange)="onMethodInputChange($event)"
+          aria-label="Test HTTP method"
+        >
           <mat-option value="GET">GET</mat-option>
           <mat-option value="HEAD">HEAD</mat-option>
           <mat-option value="POST">POST</mat-option>
@@ -54,7 +57,11 @@
             *ngFor="let role of testRoles"
             [removable]="true"
             [selected]="role === 'anonymous' || role === 'authenticated'"
-            [color]="role === 'anonymous' || role === 'authenticated' ? 'accent' : 'primary'"
+            [color]="
+              role === 'anonymous' || role === 'authenticated'
+                ? 'accent'
+                : 'primary'
+            "
             (removed)="removeRole(role)"
           >
             {{ role }}
@@ -73,6 +80,7 @@
         <mat-label>Route</mat-label>
         <input
           autocomplete="off"
+          placeholder="Route..."
           aria-label="Test route"
           matInput
           type="text"

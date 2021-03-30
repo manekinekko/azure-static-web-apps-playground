@@ -54,16 +54,24 @@ section {
   padding: 10px;
 }
 
+.mat-drawer {
+  overflow: visible;
+}
+.mat-drawer.mat-drawer-side {
+  visibility: visible !important;
+}
 .toggle-code-editor {
+  outline: none;
   position: absolute;
   transform: rotate(-90deg);
   top: 50%;
-  left: -68px;
+  left: 502px;
   border: 1px solid #e0e0e0;
   background: white;
   padding: 10px 30px;
   border-radius: 0 0 16px 16px;
   color: #8e8e8e;
+  border-top: white;
 }
 
 .content {
@@ -130,4 +138,9 @@ section {
 
 .match-false {
   color: rgb(247, 62, 62);
+}
+
+mat-chip.mat-chip {
+  padding: 2px 2px 3px 5px;
+  min-height: 22px;
 }
