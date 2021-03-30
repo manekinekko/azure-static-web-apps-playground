@@ -71,6 +71,7 @@ section {
   padding: 10px 30px;
   border-radius: 0 0 16px 16px;
   color: #8e8e8e;
+  cursor: pointer;
   border-top: white;
 }
 

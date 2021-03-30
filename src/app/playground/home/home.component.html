@@ -110,7 +110,7 @@
             <mat-panel-title>Routes</mat-panel-title>
             <mat-panel-description>
               Found {{ swaConfigRulesObject?.$$size?.routes }} route rules
-              <mat-icon>format_list_numbered</mat-icon>
+              <mat-icon>rule</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -169,7 +169,7 @@
             <mat-panel-description>
               Fallback routes to&nbsp;
               {{ swaConfigRulesObject?.navigationFallback?.rewrite }}
-              <mat-icon>rule</mat-icon>
+              <mat-icon>mediation</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -178,7 +178,7 @@
             <b>{{ swaConfigRulesObject?.navigationFallback?.rewrite }}</b
             >.
           </p>
-          <p>
+          <p *ngIf="swaConfigRulesObject?.navigationFallback?.exclude?.length">
             Except files that match
             <b>{{ swaConfigRulesObject?.navigationFallback?.exclude }}</b
             >.
@@ -215,7 +215,7 @@
             <mat-panel-description>
               Found
               {{ swaConfigRulesObject?.$$size?.responseOverrides }} overrides
-              <mat-icon>account_tree</mat-icon>
+              <mat-icon>swap_calls</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
