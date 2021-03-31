@@ -314,9 +314,11 @@
               </mat-panel-description>
             </mat-expansion-panel-header>
 
-            <pre>
-              <code *ngFor="let h of requestHeaders | keyvalue">{{h.key}}: {{h.value}}</code>
-            </pre>
+            <p>
+              <span *ngFor="let h of requestHeaders | keyvalue"
+                ><b>{{ h.key }}:</b> {{ h.value }}</span
+              >
+            </p>
           </mat-expansion-panel>
 
           <mat-expansion-panel expanded="true">
@@ -328,9 +330,11 @@
               </mat-panel-description>
             </mat-expansion-panel-header>
 
-            <pre>
-              <code *ngFor="let h of responseHeaders | keyvalue">{{h.key}}: {{h.value}}</code>
-            </pre>
+            <p>
+              <span *ngFor="let h of responseHeaders | keyvalue"
+                ><b>{{ h.key }}:</b> {{ h.value }}</span
+              >
+            </p>
           </mat-expansion-panel>
         </mat-accordion>
       </section>
