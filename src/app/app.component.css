@@ -46,7 +46,7 @@
 
 main {
   height: calc(100% - (var(--toolbar-height) + var(--footer-height) + (2 * var(--footer-padding))));
-  padding-bottom: var(--footer-height);
+  padding-bottom: var(--footer-padding);
 }
 
 footer {
