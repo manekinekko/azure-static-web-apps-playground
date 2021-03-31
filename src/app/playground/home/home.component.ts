@@ -245,6 +245,7 @@ export class HomeComponent implements OnInit {
           ) {
             this.responseHeaders['URL'] = this.swaConfigRulesObject
               ?.responseOverrides[statusCode].rewrite as string;
+            this.responseHeaders['Status Code'] = `200`;
           }
         }
       }
