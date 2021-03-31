@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { RulesEngineService } from '../rules-engine.service';
 import {
+  ResponseOverrideCode,
   RulesParserService,
   StaticWebApp,
   StaticWebAppRouteMethod,
@@ -165,6 +166,7 @@ export class HomeComponent implements OnInit {
 
   onRouteInputChange(route: string) {
     this.rulesEngine.reset(this.swaConfigRulesObject);
+
     if (route) {
       this.requestHeaders = {
         URL: this.testRoute,
@@ -172,7 +174,7 @@ export class HomeComponent implements OnInit {
         Cookie: `[${this.testRoles.join(', ')}]`,
       };
 
-      // match route rules
+      // apply route rules
       const matchedRule = this.rulesEngine.matchRoute(
         { route, method: this.testMethod, roles: this.testRoles },
         this.swaConfigRulesObject?.routes
@@ -202,7 +204,7 @@ export class HomeComponent implements OnInit {
         }`;
       }
 
-      // match navigation fallbacks
+      // apply navigation fallbacks
       const matchedNavigationFallback = this.rulesEngine.matchNavigationFallback(
         { route },
         this.swaConfigRulesObject?.navigationFallback
@@ -210,9 +212,41 @@ export class HomeComponent implements OnInit {
 
       if (matchedNavigationFallback) {
         this.expansionPanelNavigationFallback.open();
+      } else {
+        this.responseHeaders['URL'] = this.swaConfigRulesObject
+          ?.navigationFallback.rewrite as string;
       }
-      else {
-        this.responseHeaders['URL'] = this.swaConfigRulesObject?.navigationFallback.rewrite as string;
+
+      // apply global headers
+      if (this.swaConfigRulesObject?.globalHeaders) {
+        for (const header in this.swaConfigRulesObject?.globalHeaders) {
+          if (this.swaConfigRulesObject?.globalHeaders.hasOwnProperty(header)) {
+            this.responseHeaders[
+              header
+            ] = this.swaConfigRulesObject?.globalHeaders[header];
+          }
+        }
+      }
+
+      // apply response overrides
+      if (this.swaConfigRulesObject?.responseOverrides) {
+        const statusCode = this.responseHeaders[
+          'Status Code'
+        ] as ResponseOverrideCode;
+        if (this.swaConfigRulesObject?.responseOverrides[statusCode]) {
+          if (
+            this.swaConfigRulesObject?.responseOverrides[statusCode].redirect
+          ) {
+            this.responseHeaders['Location'] = this.swaConfigRulesObject
+              ?.responseOverrides[statusCode].redirect as string;
+          }
+          if (
+            this.swaConfigRulesObject?.responseOverrides[statusCode].rewrite
+          ) {
+            this.responseHeaders['URL'] = this.swaConfigRulesObject
+              ?.responseOverrides[statusCode].rewrite as string;
+          }
+        }
       }
     }
   }
