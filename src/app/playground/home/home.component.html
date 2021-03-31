@@ -112,9 +112,22 @@
               <mat-panel-title>Routes</mat-panel-title>
               <mat-panel-description>
                 Found {{ swaConfigRulesObject?.$$size?.routes }} route rules
-                <mat-icon>rule</mat-icon>
               </mat-panel-description>
             </mat-expansion-panel-header>
+
+            <mat-hint
+              >Route rules allow you to define the pattern of URLs that allow
+              access to your application to the web. Routes are defined as an
+              array of routing rules (<a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#routes"
+                >read about routes</a
+              >). Routes are secured by adding one or more role names into a
+              rule's allowedRoles array, and users are associated to custom
+              roles via invitations (<a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#securing-routes-with-roles"
+                >read about roles</a
+              >).
+            </mat-hint>
 
             <mat-list>
               <mat-list-item
@@ -138,9 +151,11 @@
                   >close</mat-icon
                 >
 
-                <div mat-line>{{ route.route }}</div>
+                <div mat-line>
+                  For route <b>{{ route.route }}</b>
+                </div>
                 <div mat-line *ngIf="route.statusCode">
-                  Responde with code <b>{{ route.statusCode }}</b>
+                  Responde with status code <b>{{ route.statusCode }}</b>
                 </div>
                 <div mat-line *ngIf="route.rewrite">
                   Rewrite to <b>{{ route.rewrite }}</b>
@@ -155,7 +170,7 @@
                   >
                 </div>
                 <div mat-line *ngIf="route.allowedRoles">
-                  Authorize for <b>{{ route.allowedRoles }}</b>
+                  Restrict to only <b>{{ route.allowedRoles }}</b>
                 </div>
                 <div mat-line *ngIf="route.methods">
                   Methods <b>{{ route.methods }}</b>
@@ -174,18 +189,15 @@
               <mat-panel-description>
                 Fallback routes to&nbsp;
                 {{ swaConfigRulesObject?.navigationFallback?.rewrite }}
-                <mat-icon>mediation</mat-icon>
               </mat-panel-description>
             </mat-expansion-panel-header>
 
-            <p>
-              Rewrite all routes to
-              <b>{{ swaConfigRulesObject?.navigationFallback?.rewrite }}</b
-              >.
-            </p>
-
             <mat-list>
-              Except files that match:
+              <mat-hint
+                >Serve
+                <b>{{ swaConfigRulesObject?.navigationFallback?.rewrite }}</b>
+                for all requests except files that match:</mat-hint
+              >
               <mat-list-item
                 *ngFor="
                   let rule of swaConfigRulesObject?.navigationFallback
@@ -207,7 +219,7 @@
                 <mat-icon mat-list-icon *ngIf="rule.$$match === false"
                   >close</mat-icon
                 >
-                <b>{{ rule.$$value }}</b>
+                {{ rule.$$value }}
                 <mat-divider *ngIf="!last"></mat-divider>
               </mat-list-item>
             </mat-list>
@@ -218,9 +230,21 @@
               <mat-panel-title>Global headers</mat-panel-title>
               <mat-panel-description>
                 Found {{ swaConfigRulesObject?.$$size?.globalHeaders }} headers
-                <mat-icon>http</mat-icon>
               </mat-panel-description>
             </mat-expansion-panel-header>
+
+            <mat-hint
+              >Global headers provide a set of
+              <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers"
+                >HTTP headers</a
+              >
+              applied to each response, unless overridden by a
+              <a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#route-headers"
+                >route header rule</a
+              >, otherwise the union of both the headers from the route and the
+              global headers is returned.</mat-hint
+            >
 
             <mat-list>
               <mat-list-item
@@ -228,10 +252,10 @@
                   let header of swaConfigRulesObject?.globalHeaders | keyvalue
                 "
               >
-                <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
+                <mat-icon mat-list-icon>tag</mat-icon>
                 <div mat-line>
-                  <span>{{ header.key }}</span>
-                  &nbsp;<b>{{ header.value }}</b>
+                  <b>{{ header.key }}</b>
+                  &nbsp;<span>{{ header.value }}</span>
                 </div>
               </mat-list-item>
             </mat-list>
@@ -243,9 +267,17 @@
               <mat-panel-description>
                 Found
                 {{ swaConfigRulesObject?.$$size?.responseOverrides }} overrides
-                <mat-icon>swap_calls</mat-icon>
               </mat-panel-description>
             </mat-expansion-panel-header>
+
+            <mat-hint
+              >Response overrides provide an opportunity to define a custom
+              response when the server would otherwise return an error code (<a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#response-overrides"
+                >read docs</a
+              >) The following HTTP codes are available to override: 400, 401,
+              403 and 404.
+            </mat-hint>
 
             <mat-list>
               <mat-list-item
@@ -254,7 +286,7 @@
                     | keyvalue
                 "
               >
-                <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
+                <mat-icon mat-list-icon>tag</mat-icon>
                 <div mat-line>{{ response.key }}</div>
                 <div mat-line *ngIf="response.value.statusCode">
                   Response Status Code <b>{{ response.value.statusCode }}</b>
