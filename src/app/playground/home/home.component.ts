@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit {
     this.requestHeaders = {
       URL: this.testRoute,
       Method: `${this.testMethod}`,
-      Cookie: `[${this.testRoles.join(', ')}]`,
+      Roles: `[${this.testRoles.join(', ')}]`,
     };
   }
 
@@ -171,7 +171,7 @@ export class HomeComponent implements OnInit {
       this.requestHeaders = {
         URL: this.testRoute,
         Method: `${this.testMethod}`,
-        Cookie: `[${this.testRoles.join(', ')}]`,
+        Roles: `[${this.testRoles.join(', ')}]`,
       };
       this.responseHeaders = {};
 
