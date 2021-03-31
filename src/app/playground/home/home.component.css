@@ -13,6 +13,12 @@ main {
   justify-content: space-between;
 }
 
+main .mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+}
+
 section {
   height: 100%;
   display: inline-block;
@@ -86,6 +92,10 @@ section {
   height: 50px;
 }
 
+.mat-list-base .mat-list-item .mat-line:nth-child(n + 2) {
+  padding:0 8px;
+}
+
 .routes-inspector {
   flex: 2;
 }
@@ -157,6 +167,6 @@ section {
 }
 
 mat-chip.mat-chip {
-  padding: 2px 2px 3px 5px;
+  padding: 2px 2px 3px 8px;
   min-height: 22px;
 }
