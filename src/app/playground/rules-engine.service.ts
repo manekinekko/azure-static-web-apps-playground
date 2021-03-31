@@ -44,7 +44,7 @@ export class RulesEngineService {
       for (let index = 0; index < rules.length; index++) {
         const rule = rules[index];
 
-        const ruleRegEx = new RegExp(`^${rule.route.replace('*', '.*')}$`);
+        const ruleRegEx = new RegExp(`^${this.globToRegExp(rule.route)}$`);
         const testRoute = ruleRegEx.test(route);
 
         if (testRoute) {
@@ -86,28 +86,7 @@ export class RulesEngineService {
       for (let index = 0; index < rules.$$exclude.length!; index++) {
         const exclusion = rules.$$exclude[index];
         // convert experesion {png,jpg,gif} to a valid regex (png|jpg|gif)
-        let exclusionExpression = exclusion.$$value;
-        const filesExtensionMatch = exclusionExpression.match(/{.*}/);
-        if (filesExtensionMatch) {
-          const filesExtensionExpression = filesExtensionMatch[0];
-          if (filesExtensionExpression) {
-            // build a regex group (png|jpg|gif)
-            const filesExtensionRegEx = filesExtensionExpression
-              .replace(/\,/g, '|')
-              .replace('{', '(')
-              .replace('}', ')');
-            exclusionExpression = exclusionExpression.replace(
-              filesExtensionExpression,
-              filesExtensionRegEx
-            );
-          }
-        }
-
-        // turn expression into a valid regex
-        exclusionExpression = exclusionExpression
-          .replace(/\//g, '\\/')
-          .replace('*.', '.*')
-          .replace('/*', '/.*');
+        let exclusionExpression = this.globToRegExp(exclusion.$$value);
 
         if (new RegExp(`${exclusionExpression}`).test(route)) {
           exclusion.$$match = true;
@@ -119,5 +98,29 @@ export class RulesEngineService {
     }
 
     return null;
+  }
+
+  private globToRegExp(glob: string) {
+    const filesExtensionMatch = glob.match(/{.*}/);
+    if (filesExtensionMatch) {
+      const filesExtensionExpression = filesExtensionMatch[0];
+      if (filesExtensionExpression) {
+        // build a regex group (png|jpg|gif)
+        const filesExtensionRegEx = filesExtensionExpression
+          .replace(/\,/g, '|')
+          .replace('{', '(')
+          .replace('}', ')');
+        glob = glob.replace(
+          filesExtensionExpression,
+          filesExtensionRegEx
+        );
+      }
+    }
+
+    // turn expression into a valid regex
+    return glob
+      .replace(/\//g, '\\/')
+      .replace('*.', '.*')
+      .replace('/*', '/.*');
   }
 }
