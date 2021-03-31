@@ -173,6 +173,7 @@ export class HomeComponent implements OnInit {
         Method: `${this.testMethod}`,
         Cookie: `[${this.testRoles.join(', ')}]`,
       };
+      this.responseHeaders = {};
 
       // apply route rules
       const matchedRule = this.rulesEngine.matchRoute(
