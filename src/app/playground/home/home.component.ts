@@ -6,7 +6,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { RulesMatcherService } from '../rules-matcher.service';
+import { RulesEngineService } from '../rules-engine.service';
 import {
   RulesParserService,
   StaticWebApp,
@@ -24,20 +24,25 @@ export class HomeComponent implements OnInit {
 
   editorOptions = { theme: 'vs-dark', language: 'json' };
 
-  testRoute = '';
+  testRoute = '/';
   testMethod: StaticWebAppRouteMethod = 'GET';
   testRoles = ['anonymous', 'authenticated'];
+  requestHeaders: { [key: string]: string } = {};
+  responseHeaders: { [key: string]: string } = {};
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   @ViewChild('expansionPanelRouteRules')
   expansionPanelRouteRules: MatExpansionPanel;
+
+  @ViewChild('expansionPanelNavigationFallback')
+  expansionPanelNavigationFallback: MatExpansionPanel;
   @ViewChild('drawer', { static: true }) drawer: MatDrawer;
 
   editorInstance: monaco.editor.IStandaloneCodeEditor;
 
   constructor(
-    private readonly rules: RulesParserService,
-    private readonly matcher: RulesMatcherService,
+    private readonly rulesParser: RulesParserService,
+    private readonly rulesEngine: RulesEngineService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute
   ) {}
@@ -45,11 +50,17 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     const { fragment } = this.route.snapshot;
     if (fragment) {
-      const [key, value] = fragment.split('=');
+      const [key, value] = fragment.split('/');
       if (key === 'c') {
         this.parseRules(window.atob(value));
       }
     }
+
+    this.requestHeaders = {
+      URL: this.testRoute,
+      Method: `${this.testMethod}`,
+      Cookie: `[${this.testRoles.join(', ')}]`,
+    };
   }
 
   onEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {
@@ -67,6 +78,9 @@ export class HomeComponent implements OnInit {
       verticalPosition: 'bottom',
       duration: 10000,
     });
+  }
+  hideMessage() {
+    this.snackBar.dismiss();
   }
 
   processConfigFile(files: FileList) {
@@ -86,18 +100,20 @@ export class HomeComponent implements OnInit {
   parseRules(content: string) {
     try {
       this.swaConfigRules = content;
-      this.swaConfigRulesObject = this.rules.parse(this.swaConfigRules);
+      this.swaConfigRulesObject = this.rulesParser.parse(this.swaConfigRules);
+
+      this.hideMessage();
     } catch (error) {
       console.error(error);
 
       const [__, line]: [string, string] = error.message.match(/line ([0-9]*)/);
       const [_, column]: [string, string] = error.message.match(/(\-+)/);
-
       this.showMessage(
         `Cannot process configuration file. Possible error on line ${line}.`
       );
       this.drawer.open();
-      setTimeout(() => this.showErrorInEditor(+line, column.length + 1), 1000);
+
+      setTimeout(() => this.showErrorInEditor(+line, +column), 1000);
     }
   }
 
@@ -139,23 +155,64 @@ export class HomeComponent implements OnInit {
   }
 
   syncConfigContentWithUrlHash(fileContent: string) {
-    document.location.hash = `c=${window.btoa(fileContent)}`;
+    document.location.hash = `c/${window.btoa(fileContent)}`;
   }
 
   clearTestRoute() {
-    this.matcher.reset(this.swaConfigRulesObject);
-    this.testRoute = '';
+    this.rulesEngine.reset(this.swaConfigRulesObject);
+    this.testRoute = '/';
   }
 
   onRouteInputChange(route: string) {
-    this.matcher.reset(this.swaConfigRulesObject);
+    this.rulesEngine.reset(this.swaConfigRulesObject);
     if (route) {
-      const matchedRule = this.matcher.matchRoutes(
+      this.requestHeaders = {
+        URL: this.testRoute,
+        Method: `${this.testMethod}`,
+        Cookie: `[${this.testRoles.join(', ')}]`,
+      };
+
+      // match route rules
+      const matchedRule = this.rulesEngine.matchRoute(
         { route, method: this.testMethod, roles: this.testRoles },
         this.swaConfigRulesObject?.routes
       );
       if (matchedRule) {
         this.expansionPanelRouteRules.open();
+
+        this.responseHeaders = {
+          URL: this.testRoute,
+        };
+
+        if (matchedRule.headers) {
+          for (const header in matchedRule.headers) {
+            if (matchedRule.headers.hasOwnProperty(header)) {
+              this.responseHeaders[header] = matchedRule.headers[header];
+            }
+          }
+        }
+        if (matchedRule.redirect) {
+          this.responseHeaders['Location'] = matchedRule.redirect;
+        }
+        if (matchedRule.rewrite) {
+          this.responseHeaders['URL'] = matchedRule.rewrite;
+        }
+        this.responseHeaders['Status Code'] = `${
+          matchedRule.statusCode || 200
+        }`;
+      }
+
+      // match navigation fallbacks
+      const matchedNavigationFallback = this.rulesEngine.matchNavigationFallback(
+        { route },
+        this.swaConfigRulesObject?.navigationFallback
+      );
+
+      if (matchedNavigationFallback) {
+        this.expansionPanelNavigationFallback.open();
+      }
+      else {
+        this.responseHeaders['URL'] = this.swaConfigRulesObject?.navigationFallback.rewrite as string;
       }
     }
   }
@@ -169,7 +226,7 @@ export class HomeComponent implements OnInit {
     const input = event.input;
     const value = (event.value || '').trim();
     if (value && !this.testRoles.includes(value)) {
-      this.testRoles.push(value.trim());
+      this.testRoles.push(value);
     }
 
     // Reset the input value

@@ -25,14 +25,22 @@ export type StaticWebAppRouteRule = {
   methods: StaticWebAppRouteMethod[];
 };
 
+export type StaticWebAppNavigationFallbackExclusion = {
+  $$match: boolean | undefined;
+  $$id: number;
+  $$value: string;
+};
+
+export type StaticWebAppNavigationFallback = {
+  rewrite: string;
+  exclude?: string;
+  $$exclude?: StaticWebAppNavigationFallbackExclusion[];
+};
+
 export type StaticWebApp = {
   routes: StaticWebAppRouteRule[];
 
-  navigationFallback: {
-    rewrite: string;
-    exclude: string[];
-    $$match: boolean | undefined;
-  };
+  navigationFallback: StaticWebAppNavigationFallback;
 
   globalHeaders: { [header: string]: string };
 
@@ -58,7 +66,7 @@ export class RulesParserService {
   constructor() {}
 
   parse(config: string): StaticWebApp | undefined {
-
+    // run a JSON lint before parsing
     try {
       jsonlint.parse(config);
     } catch (e) {
@@ -66,9 +74,28 @@ export class RulesParserService {
     }
 
     const parsedConfig = JSON.parse(config) as StaticWebApp;
+
+    // routes
     parsedConfig?.routes?.forEach(
       (route, index: number) => (route.$$id = index)
     );
+
+    // navigationFallback
+    if (parsedConfig?.navigationFallback?.exclude) {
+      parsedConfig.navigationFallback.$$exclude = [];
+      for (
+        let index = 0;
+        index < parsedConfig.navigationFallback.exclude.length;
+        index++
+      ) {
+        const excludeRule = parsedConfig.navigationFallback.exclude[index];
+        parsedConfig.navigationFallback.$$exclude?.push({
+          $$value: excludeRule,
+          $$id: index,
+          $$match: undefined,
+        });
+      }
+    }
 
     parsedConfig.$$size = {
       routes: parsedConfig.routes?.length,

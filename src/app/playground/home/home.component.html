@@ -69,7 +69,7 @@
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
           <input
-            placeholder="Role..."
+            placeholder="Add or remove roles to test ACL..."
             [matChipInputFor]="chipList"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             [matChipInputAddOnBlur]="true"
@@ -81,7 +81,7 @@
         <mat-label>Route</mat-label>
         <input
           autocomplete="off"
-          placeholder="Route..."
+          placeholder="Type in a route to test your configuration"
           aria-label="Test route"
           matInput
           type="text"
@@ -101,147 +101,207 @@
       </mat-form-field>
     </section>
 
-    <section class="routes-inspector" *ngIf="swaConfigRulesObject">
-      <mat-accordion multi>
-        <mat-expansion-panel
-          *ngIf="swaConfigRulesObject?.routes"
-          #expansionPanelRouteRules
-        >
-          <mat-expansion-panel-header>
-            <mat-panel-title>Routes</mat-panel-title>
-            <mat-panel-description>
-              Found {{ swaConfigRulesObject?.$$size?.routes }} route rules
-              <mat-icon>rule</mat-icon>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+    <main *ngIf="swaConfigRulesObject">
+      <section class="routes-inspector">
+        <mat-accordion multi>
+          <mat-expansion-panel
+            *ngIf="swaConfigRulesObject?.routes"
+            #expansionPanelRouteRules
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title>Routes</mat-panel-title>
+              <mat-panel-description>
+                Found {{ swaConfigRulesObject?.$$size?.routes }} route rules
+                <mat-icon>rule</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
 
-          <mat-list>
-            <mat-list-item
-              *ngFor="
-                let route of swaConfigRulesObject?.routes;
-                let last = last
-              "
-              [ngClass]="{
-                'match-true': route.$$match === true,
-                'match-false': route.$$match === false
-              }"
-              id="route-rule-{{ route.$$id }}"
-            >
-              <mat-icon mat-list-icon *ngIf="route.$$match === undefined"
-                >tag</mat-icon
+            <mat-list>
+              <mat-list-item
+                *ngFor="
+                  let route of swaConfigRulesObject?.routes;
+                  let last = last
+                "
+                [ngClass]="{
+                  'match-true': route.$$match === true,
+                  'match-false': route.$$match === false
+                }"
+                id="route-rule-{{ route.$$id }}"
               >
-              <mat-icon mat-list-icon *ngIf="route.$$match === true"
-                >check</mat-icon
-              >
-              <mat-icon mat-list-icon *ngIf="route.$$match === false"
-                >close</mat-icon
-              >
-
-              <div mat-line>{{ route.route }}</div>
-              <div mat-line *ngIf="route.statusCode">
-                Responde with code <b>{{ route.statusCode }}</b>
-              </div>
-              <div mat-line *ngIf="route.rewrite">
-                Rewrite to <b>{{ route.rewrite }}</b>
-              </div>
-              <div mat-line *ngIf="route.redirect">
-                Redirect to <b>{{ route.redirect }}</b>
-              </div>
-              <div mat-line *ngIf="route.headers">
-                Add headers <br />
-                <b *ngFor="let header of route.headers | keyvalue"
-                  >&nbsp;&nbsp;{{ header.key }}: {{ header.value }}</b
+                <mat-icon mat-list-icon *ngIf="route.$$match === undefined"
+                  >tag</mat-icon
                 >
-              </div>
-              <div mat-line *ngIf="route.allowedRoles">
-                Authorize for <b>{{ route.allowedRoles }}</b>
-              </div>
-              <div mat-line *ngIf="route.methods">
-                Methods <b>{{ route.methods }}</b>
-              </div>
-              <mat-divider *ngIf="!last"></mat-divider>
-            </mat-list-item>
-          </mat-list>
-        </mat-expansion-panel>
+                <mat-icon mat-list-icon *ngIf="route.$$match === true"
+                  >check</mat-icon
+                >
+                <mat-icon mat-list-icon *ngIf="route.$$match === false"
+                  >close</mat-icon
+                >
 
-        <mat-expansion-panel *ngIf="swaConfigRulesObject?.navigationFallback">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Fallback routes</mat-panel-title>
-            <mat-panel-description>
-              Fallback routes to&nbsp;
-              {{ swaConfigRulesObject?.navigationFallback?.rewrite }}
-              <mat-icon>mediation</mat-icon>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+                <div mat-line>{{ route.route }}</div>
+                <div mat-line *ngIf="route.statusCode">
+                  Responde with code <b>{{ route.statusCode }}</b>
+                </div>
+                <div mat-line *ngIf="route.rewrite">
+                  Rewrite to <b>{{ route.rewrite }}</b>
+                </div>
+                <div mat-line *ngIf="route.redirect">
+                  Redirect to <b>{{ route.redirect }}</b>
+                </div>
+                <div mat-line *ngIf="route.headers">
+                  Add headers <br />
+                  <b *ngFor="let header of route.headers | keyvalue"
+                    >&nbsp;&nbsp;{{ header.key }}: {{ header.value }}</b
+                  >
+                </div>
+                <div mat-line *ngIf="route.allowedRoles">
+                  Authorize for <b>{{ route.allowedRoles }}</b>
+                </div>
+                <div mat-line *ngIf="route.methods">
+                  Methods <b>{{ route.methods }}</b>
+                </div>
+                <mat-divider *ngIf="!last"></mat-divider>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
 
-          <p>
-            Rewrite all routes to
-            <b>{{ swaConfigRulesObject?.navigationFallback?.rewrite }}</b
-            >.
-          </p>
-          <p *ngIf="swaConfigRulesObject?.navigationFallback?.exclude?.length">
-            Except files that match
-            <b>{{ swaConfigRulesObject?.navigationFallback?.exclude }}</b
-            >.
-          </p>
-        </mat-expansion-panel>
+          <mat-expansion-panel
+            *ngIf="swaConfigRulesObject?.navigationFallback"
+            #expansionPanelNavigationFallback
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title>Fallback routes</mat-panel-title>
+              <mat-panel-description>
+                Fallback routes to&nbsp;
+                {{ swaConfigRulesObject?.navigationFallback?.rewrite }}
+                <mat-icon>mediation</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
 
-        <mat-expansion-panel *ngIf="swaConfigRulesObject?.globalHeaders">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Global headers</mat-panel-title>
-            <mat-panel-description>
-              Found {{ swaConfigRulesObject?.$$size?.globalHeaders }} headers
-              <mat-icon>http</mat-icon>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+            <p>
+              Rewrite all routes to
+              <b>{{ swaConfigRulesObject?.navigationFallback?.rewrite }}</b
+              >.
+            </p>
 
-          <mat-list>
-            <mat-list-item
-              *ngFor="
-                let header of swaConfigRulesObject?.globalHeaders | keyvalue
-              "
-            >
-              <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
-              <div mat-line>
-                <span>{{ header.key }}</span>
-                &nbsp;<b>{{ header.value }}</b>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-expansion-panel>
+            <mat-list>
+              Except files that match:
+              <mat-list-item
+                *ngFor="
+                  let rule of swaConfigRulesObject?.navigationFallback
+                    ?.$$exclude;
+                  let last = last
+                "
+                [ngClass]="{
+                  'match-true': rule.$$match === true,
+                  'match-false': rule.$$match === false
+                }"
+                id="navigation-fallback-rule-{{ rule.$$id }}"
+              >
+                <mat-icon mat-list-icon *ngIf="rule.$$match === undefined"
+                  >tag</mat-icon
+                >
+                <mat-icon mat-list-icon *ngIf="rule.$$match === true"
+                  >check</mat-icon
+                >
+                <mat-icon mat-list-icon *ngIf="rule.$$match === false"
+                  >close</mat-icon
+                >
+                <b>{{ rule.$$value }}</b>
+                <mat-divider *ngIf="!last"></mat-divider>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="swaConfigRulesObject?.responseOverrides">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Response overrides</mat-panel-title>
-            <mat-panel-description>
-              Found
-              {{ swaConfigRulesObject?.$$size?.responseOverrides }} overrides
-              <mat-icon>swap_calls</mat-icon>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+          <mat-expansion-panel *ngIf="swaConfigRulesObject?.globalHeaders">
+            <mat-expansion-panel-header>
+              <mat-panel-title>Global headers</mat-panel-title>
+              <mat-panel-description>
+                Found {{ swaConfigRulesObject?.$$size?.globalHeaders }} headers
+                <mat-icon>http</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
 
-          <mat-list>
-            <mat-list-item
-              *ngFor="
-                let response of swaConfigRulesObject?.responseOverrides
-                  | keyvalue
-              "
-            >
-              <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
-              <div mat-line>{{ response.key }}</div>
-              <div mat-line *ngIf="response.value.statusCode">
-                Response Status Code <b>{{ response.value.statusCode }}</b>
-              </div>
-              <div mat-line *ngIf="response.value.rewrite">
-                Rewrite to <b>{{ response.value.rewrite }}</b>
-              </div>
-              <div mat-line *ngIf="response.value.redirect">
-                Redirect to <b>{{ response.value.redirect }}</b>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-expansion-panel>
-      </mat-accordion>
-    </section>
+            <mat-list>
+              <mat-list-item
+                *ngFor="
+                  let header of swaConfigRulesObject?.globalHeaders | keyvalue
+                "
+              >
+                <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
+                <div mat-line>
+                  <span>{{ header.key }}</span>
+                  &nbsp;<b>{{ header.value }}</b>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel *ngIf="swaConfigRulesObject?.responseOverrides">
+            <mat-expansion-panel-header>
+              <mat-panel-title>Response overrides</mat-panel-title>
+              <mat-panel-description>
+                Found
+                {{ swaConfigRulesObject?.$$size?.responseOverrides }} overrides
+                <mat-icon>swap_calls</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-list>
+              <mat-list-item
+                *ngFor="
+                  let response of swaConfigRulesObject?.responseOverrides
+                    | keyvalue
+                "
+              >
+                <mat-icon mat-list-icon>keyboard_arrow_right</mat-icon>
+                <div mat-line>{{ response.key }}</div>
+                <div mat-line *ngIf="response.value.statusCode">
+                  Response Status Code <b>{{ response.value.statusCode }}</b>
+                </div>
+                <div mat-line *ngIf="response.value.rewrite">
+                  Rewrite to <b>{{ response.value.rewrite }}</b>
+                </div>
+                <div mat-line *ngIf="response.value.redirect">
+                  Redirect to <b>{{ response.value.redirect }}</b>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </section>
+
+      <section class="routes-logs">
+        <mat-accordion multi displayMode="flat" hideToggle="true">
+          <mat-expansion-panel expanded="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>Request Headers</mat-panel-title>
+              <mat-panel-description>
+                &nbsp;
+                <mat-icon>http</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <pre>
+              <code *ngFor="let h of requestHeaders | keyvalue">{{h.key}}: {{h.value}}</code>
+            </pre>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel expanded="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>Response Headers</mat-panel-title>
+              <mat-panel-description>
+                &nbsp;
+                <mat-icon>http</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <pre>
+              <code *ngFor="let h of responseHeaders | keyvalue">{{h.key}}: {{h.value}}</code>
+            </pre>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </section>
+    </main>
   </div>
 </mat-drawer-container>
