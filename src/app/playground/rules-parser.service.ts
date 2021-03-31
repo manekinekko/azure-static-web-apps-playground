@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as jsonlint from 'jsonlint-mod';
 
 export type ResponseOverrideCode = '400' | '401' | '403' | '404';
 export type StaticWebAppRouteMethod =
@@ -57,8 +58,14 @@ export class RulesParserService {
   constructor() {}
 
   parse(config: string): StaticWebApp | undefined {
-    const parsedConfig = JSON.parse(config) as StaticWebApp;
 
+    try {
+      jsonlint.parse(config);
+    } catch (e) {
+      throw e;
+    }
+
+    const parsedConfig = JSON.parse(config) as StaticWebApp;
     parsedConfig?.routes?.forEach(
       (route, index: number) => (route.$$id = index)
     );

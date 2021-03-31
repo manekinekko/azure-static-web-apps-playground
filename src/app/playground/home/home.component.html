@@ -6,6 +6,7 @@
   <mat-drawer #drawer mode="side" fixedInViewport="false">
     <section>
       <ngx-monaco-editor
+        (init)="onEditorInit($event)"
         [options]="editorOptions"
         [ngModel]="swaConfigRules"
         (ngModelChange)="onSwaConfigRulesChanged($event)"

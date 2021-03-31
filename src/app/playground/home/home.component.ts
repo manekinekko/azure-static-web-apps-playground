@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSelectChange } from '@angular/material/select';
+import { MatDrawer } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { RulesMatcherService } from '../rules-matcher.service';
@@ -30,6 +31,9 @@ export class HomeComponent implements OnInit {
 
   @ViewChild('expansionPanelRouteRules')
   expansionPanelRouteRules: MatExpansionPanel;
+  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
+
+  editorInstance: monaco.editor.IStandaloneCodeEditor;
 
   constructor(
     private readonly rules: RulesParserService,
@@ -46,6 +50,10 @@ export class HomeComponent implements OnInit {
         this.parseRules(window.atob(value));
       }
     }
+  }
+
+  onEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {
+    this.editorInstance = editor;
   }
 
   onSwaConfigRulesChanged(value: string) {
@@ -82,12 +90,52 @@ export class HomeComponent implements OnInit {
     } catch (error) {
       console.error(error);
 
-      if (error.message.includes('Unexpected token')) {
-        this.showMessage(`Invalid JSON: ${error.message}`);
-      } else {
-        this.showMessage(error.message);
-      }
+      const [__, line]: [string, string] = error.message.match(/line ([0-9]*)/);
+      const [_, column]: [string, string] = error.message.match(/(\-+)/);
+
+      this.showMessage(
+        `Cannot process configuration file. Possible error on line ${line}.`
+      );
+      this.drawer.open();
+      setTimeout(() => this.showErrorInEditor(+line, column.length + 1), 1000);
     }
+  }
+
+  showErrorInEditor(line: number, _column: number) {
+    this.editorInstance.revealLineInCenter(+line);
+    // const column = this.editorInstance.getModel()?.getLineFirstNonWhitespaceColumn(line);
+    // console.log({column});
+
+    // var decorations = this.editorInstance.deltaDecorations(
+    //   [],
+    //   [
+    //     {
+    //       range: new monaco.Range(line, 0, line, 0),
+    //       options: {
+    //         isWholeLine: true,
+    //         className: 'myContentClass',
+    //         glyphMarginClassName: 'myGlyphMarginClass',
+    //         stickiness:
+    //           monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+    //       },
+    //     },
+    //   ]
+    // );
+    // const [_, position] = error.match(/at position (\d+)/);
+
+    // const o = this.editorInstance.getModel()?.getPositionAt(line) as monaco.Position;
+    // console.log({ o });
+
+    // monaco.editor.setModelMarkers(this.editorInstance.getModel()!, 'owner', [
+    //   {
+    //     startLineNumber: o?.lineNumber,
+    //     startColumn: column,
+    //     endLineNumber: line,
+    //     endColumn: column,
+    //     message: 'Error',
+    //     severity: monaco.MarkerSeverity.Error,
+    //   },
+    // ]);
   }
 
   syncConfigContentWithUrlHash(fileContent: string) {

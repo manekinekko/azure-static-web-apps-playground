@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "~11.2.7",
     "@angular/router": "~11.2.7",
     "@materia-ui/ngx-monaco-editor": "^5.0.0",
+    "jsonlint-mod": "^1.7.6",
     "monaco-editor": "^0.23.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

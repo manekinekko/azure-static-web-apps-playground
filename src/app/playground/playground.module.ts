@@ -26,7 +26,6 @@ const MAT_MODULES = [
   MatIconModule,
   MatDividerModule,
 ];
-
 export const routes: Route[] = [
   {
     path: '',
