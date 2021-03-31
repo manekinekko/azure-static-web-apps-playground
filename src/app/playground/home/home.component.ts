@@ -173,82 +173,26 @@ export class HomeComponent implements OnInit {
         Method: `${this.testMethod}`,
         Roles: `[${this.testRoles.join(', ')}]`,
       };
-      this.responseHeaders = {};
 
-      // apply route rules
-      const matchedRule = this.rulesEngine.matchRoute(
-        { route, method: this.testMethod, roles: this.testRoles },
-        this.swaConfigRulesObject?.routes
-      );
-      if (matchedRule) {
-        this.expansionPanelRouteRules.open();
-
-        this.responseHeaders = {
-          URL: this.testRoute,
-        };
-
-        if (matchedRule.headers) {
-          for (const header in matchedRule.headers) {
-            if (matchedRule.headers.hasOwnProperty(header)) {
-              this.responseHeaders[header] = matchedRule.headers[header];
-            }
-          }
-        }
-        if (matchedRule.redirect) {
-          this.responseHeaders['Location'] = matchedRule.redirect;
-        }
-        if (matchedRule.rewrite) {
-          this.responseHeaders['URL'] = matchedRule.rewrite;
-        }
-        this.responseHeaders['Status Code'] = `${
-          matchedRule.statusCode || 200
-        }`;
-      }
-
-      // apply navigation fallbacks
-      const matchedNavigationFallback = this.rulesEngine.matchNavigationFallback(
-        { route },
-        this.swaConfigRulesObject?.navigationFallback
+      const {
+        responseHeaders,
+        shouldExpansionPanelNavigationFallback,
+        shouldExpansionPanelRouteRules,
+      } = this.rulesEngine.applyRules(
+        {
+          method: this.testMethod,
+          route: this.testRoute,
+          roles: this.testRoles,
+        },
+        this.swaConfigRulesObject
       );
 
-      if (matchedNavigationFallback) {
+      this.responseHeaders = responseHeaders;
+      if (shouldExpansionPanelNavigationFallback) {
         this.expansionPanelNavigationFallback.open();
-      } else {
-        this.responseHeaders['URL'] = this.swaConfigRulesObject
-          ?.navigationFallback.rewrite as string;
       }
-
-      // apply global headers
-      if (this.swaConfigRulesObject?.globalHeaders) {
-        for (const header in this.swaConfigRulesObject?.globalHeaders) {
-          if (this.swaConfigRulesObject?.globalHeaders.hasOwnProperty(header)) {
-            this.responseHeaders[
-              header
-            ] = this.swaConfigRulesObject?.globalHeaders[header];
-          }
-        }
-      }
-
-      // apply response overrides
-      if (this.swaConfigRulesObject?.responseOverrides) {
-        const statusCode = this.responseHeaders[
-          'Status Code'
-        ] as ResponseOverrideCode;
-        if (this.swaConfigRulesObject?.responseOverrides[statusCode]) {
-          if (
-            this.swaConfigRulesObject?.responseOverrides[statusCode].redirect
-          ) {
-            this.responseHeaders['Location'] = this.swaConfigRulesObject
-              ?.responseOverrides[statusCode].redirect as string;
-          }
-          if (
-            this.swaConfigRulesObject?.responseOverrides[statusCode].rewrite
-          ) {
-            this.responseHeaders['URL'] = this.swaConfigRulesObject
-              ?.responseOverrides[statusCode].rewrite as string;
-            this.responseHeaders['Status Code'] = `200`;
-          }
-        }
+      if (shouldExpansionPanelRouteRules) {
+        this.expansionPanelRouteRules.open();
       }
     }
   }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  ResponseOverrideCode,
   StaticWebApp,
   StaticWebAppNavigationFallback,
   StaticWebAppNavigationFallbackExclusion,
@@ -26,7 +27,90 @@ export class RulesEngineService {
     }
   }
 
-  matchRoute(
+  applyRules(
+    {
+      route,
+      method,
+      roles,
+    }: { route: string; method: StaticWebAppRouteMethod; roles: string[] },
+    swaConfigRulesObject: StaticWebApp | undefined
+  ) {
+    let responseHeaders: { [key: string]: string } = {};
+    let shouldExpansionPanelNavigationFallback = false;
+    let shouldExpansionPanelRouteRules = false;
+
+    // apply route rules
+    const matchedRule = this.applyRouteRules(
+      { route, method, roles },
+      swaConfigRulesObject?.routes
+    );
+    if (matchedRule) {
+      shouldExpansionPanelRouteRules = true;
+
+      responseHeaders = {
+        URL: route,
+      };
+
+      if (matchedRule.headers) {
+        for (const header in matchedRule.headers) {
+          if (matchedRule.headers.hasOwnProperty(header)) {
+            responseHeaders[header] = matchedRule.headers[header];
+          }
+        }
+      }
+      if (matchedRule.redirect) {
+        responseHeaders['Location'] = matchedRule.redirect;
+      }
+      if (matchedRule.rewrite) {
+        responseHeaders['URL'] = matchedRule.rewrite;
+      }
+      responseHeaders['Status Code'] = `${matchedRule.statusCode || 200}`;
+    }
+
+    // apply navigation fallbacks
+    const matchedNavigationFallback = this.matchNavigationFallback(
+      { route },
+      swaConfigRulesObject?.navigationFallback
+    );
+
+    if (matchedNavigationFallback) {
+      shouldExpansionPanelNavigationFallback = true;
+    } else {
+      responseHeaders['URL'] = swaConfigRulesObject?.navigationFallback
+        .rewrite as string;
+    }
+
+    // apply global headers
+    if (swaConfigRulesObject?.globalHeaders) {
+      for (const header in swaConfigRulesObject?.globalHeaders) {
+        if (swaConfigRulesObject?.globalHeaders.hasOwnProperty(header)) {
+          responseHeaders[header] = swaConfigRulesObject?.globalHeaders[header];
+        }
+      }
+    }
+
+    // apply response overrides
+    if (swaConfigRulesObject?.responseOverrides) {
+      const statusCode = responseHeaders['Status Code'] as ResponseOverrideCode;
+      if (swaConfigRulesObject?.responseOverrides[statusCode]) {
+        if (swaConfigRulesObject?.responseOverrides[statusCode].redirect) {
+          responseHeaders['Location'] = swaConfigRulesObject?.responseOverrides[
+            statusCode
+          ].redirect as string;
+        }
+        if (swaConfigRulesObject?.responseOverrides[statusCode].rewrite) {
+          responseHeaders['URL'] = swaConfigRulesObject?.responseOverrides[
+            statusCode
+          ].rewrite as string;
+          responseHeaders['Status Code'] = `200`;
+        }
+      }
+    }
+
+    return { responseHeaders, shouldExpansionPanelNavigationFallback, shouldExpansionPanelRouteRules };
+  }
+
+  applyRouteRules(
     {
       route,
       method,
@@ -110,17 +194,11 @@ export class RulesEngineService {
           .replace(/\,/g, '|')
           .replace('{', '(')
           .replace('}', ')');
-        glob = glob.replace(
-          filesExtensionExpression,
-          filesExtensionRegEx
-        );
+        glob = glob.replace(filesExtensionExpression, filesExtensionRegEx);
       }
     }
 
     // turn expression into a valid regex
-    return glob
-      .replace(/\//g, '\\/')
-      .replace('*.', '.*')
-      .replace('/*', '/.*');
+    return glob.replace(/\//g, '\\/').replace('*.', '.*').replace('/*', '/.*');
   }
 }
