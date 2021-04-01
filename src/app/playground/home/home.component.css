@@ -170,3 +170,10 @@ mat-chip.mat-chip {
   background-color: #212126;
     color: #fff;
 }
+
+code {
+  display: inline-block;
+  padding: 2px;
+  background-color: #eee;
+  border-radius: 2px;
+}

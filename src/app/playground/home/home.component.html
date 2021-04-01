@@ -117,17 +117,14 @@
             </mat-expansion-panel-header>
 
             <mat-hint
-              >Route rules allow you to define the pattern of URLs that allow
-              access to your application to the web. Routes are defined as an
-              array of routing rules (<a
-                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#routes"
-                >read about routes</a
-              >). Routes are secured by adding one or more role names into a
-              rule's allowedRoles array, and users are associated to custom
-              roles via invitations (<a
-                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#securing-routes-with-roles"
-                >read about roles</a
-              >).
+              ><a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#routes" target="_blank"
+                >Route rules</a> allow you to define URL patterns that allow
+              access to your application on the web. Routes are secured by adding one or more <a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#securing-routes-with-roles" target="_blank"
+                >role names</a> into a
+              rule's <code>allowedRoles</code> array, and users are associated to custom
+              roles via <a href="https://docs.microsoft.com/azure/static-web-apps/authentication-authorization?WT.mc_id=javascript-00000-wachegha#add-a-user-to-a-role" target="_blank">invitations</a>.
             </mat-hint>
 
             <mat-list>
@@ -156,7 +153,7 @@
                   For route <b>{{ route.route }}</b>
                 </div>
                 <div mat-line *ngIf="route.statusCode">
-                  Responde with status code <b>{{ route.statusCode }}</b>
+                  Responds with the status code <b>{{ route.statusCode }}</b>
                 </div>
                 <div mat-line *ngIf="route.rewrite">
                   Rewrite to <b>{{ route.rewrite }}</b>
@@ -236,12 +233,12 @@
 
             <mat-hint
               >Global headers provide a set of
-              <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers"
+              <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers" target="_blank"
                 >HTTP headers</a
               >
               applied to each response, unless overridden by a
               <a
-                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#route-headers"
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#route-headers" target="_blank"
                 >route header rule</a
               >, otherwise the union of both the headers from the route and the
               global headers is returned.</mat-hint
@@ -271,11 +268,9 @@
             </mat-expansion-panel-header>
 
             <mat-hint
-              >Response overrides provide an opportunity to define a custom
-              response when the server would otherwise return an error code (<a
-                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#response-overrides"
-                >read docs</a
-              >) The following HTTP codes are available to override: 400, 401,
+              >Response overrides provide an opportunity to define a <a
+                href="https://docs.microsoft.com/azure/static-web-apps/configuration?WT.mc_id=javascript-00000-wachegha#response-overrides" target="_blank"
+                >custom response</a> when the server would otherwise return an error code. The following HTTP codes are available to override: 400, 401,
               403 and 404.
             </mat-hint>
 
