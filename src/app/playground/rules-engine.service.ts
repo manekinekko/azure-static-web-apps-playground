@@ -67,17 +67,19 @@ export class RulesEngineService {
       responseHeaders['Status Code'] = `${matchedRule.statusCode || 200}`;
     }
 
-    // apply navigation fallbacks
-    const matchedNavigationFallback = this.matchNavigationFallback(
-      { route },
-      swaConfigRulesObject?.navigationFallback
-    );
+    // apply navigation fallbacks (only if no route rule was applied)
+    if (!matchedRule) {
+      const matchedNavigationFallback = this.matchNavigationFallback(
+        { route },
+        swaConfigRulesObject?.navigationFallback
+      );
 
-    if (matchedNavigationFallback) {
-      shouldExpansionPanelNavigationFallback = true;
-    } else {
-      responseHeaders['URL'] = swaConfigRulesObject?.navigationFallback
-        .rewrite as string;
+      if (matchedNavigationFallback) {
+        shouldExpansionPanelNavigationFallback = true;
+      } else {
+        responseHeaders['URL'] = swaConfigRulesObject?.navigationFallback
+          .rewrite as string;
+      }
     }
 
     // apply global headers
@@ -107,7 +109,11 @@ export class RulesEngineService {
       }
     }
 
-    return { responseHeaders, shouldExpansionPanelNavigationFallback, shouldExpansionPanelRouteRules };
+    return {
+      responseHeaders,
+      shouldExpansionPanelNavigationFallback,
+      shouldExpansionPanelRouteRules,
+    };
   }
 
   applyRouteRules(

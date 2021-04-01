@@ -88,6 +88,7 @@
           (input)="onRouteInputChange(testRoute)"
           [(ngModel)]="testRoute"
         />
+        <span matPrefix>https://example.com&nbsp;</span>
         <button
           mat-button
           *ngIf="testRoute"
@@ -111,7 +112,7 @@
             <mat-expansion-panel-header>
               <mat-panel-title>Routes</mat-panel-title>
               <mat-panel-description>
-                Found {{ swaConfigRulesObject?.$$size?.routes }} route rules
+                {{ swaConfigRulesObject?.$$size?.routes }} route rules
               </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -187,8 +188,8 @@
             <mat-expansion-panel-header>
               <mat-panel-title>Fallback routes</mat-panel-title>
               <mat-panel-description>
-                Fallback routes to&nbsp;
-                {{ swaConfigRulesObject?.navigationFallback?.rewrite }}
+                Serve&nbsp;
+                {{ swaConfigRulesObject?.navigationFallback?.rewrite }} ({{swaConfigRulesObject?.navigationFallback?.exclude?.length}} exclusion rules)
               </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -229,7 +230,7 @@
             <mat-expansion-panel-header>
               <mat-panel-title>Global headers</mat-panel-title>
               <mat-panel-description>
-                Found {{ swaConfigRulesObject?.$$size?.globalHeaders }} headers
+                {{ swaConfigRulesObject?.$$size?.globalHeaders }} HTTP header
               </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -265,8 +266,7 @@
             <mat-expansion-panel-header>
               <mat-panel-title>Response overrides</mat-panel-title>
               <mat-panel-description>
-                Found
-                {{ swaConfigRulesObject?.$$size?.responseOverrides }} overrides
+                {{ swaConfigRulesObject?.$$size?.responseOverrides }} custom responses
               </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -315,6 +315,8 @@
             </mat-expansion-panel-header>
 
             <p>
+              <span><b>{{requestHeaders['Method']}} {{requestHeaders['URL']}}</b></span>
+              <br>
               <span *ngFor="let h of requestHeaders | keyvalue"
                 ><b>{{ h.key }}:</b> {{ h.value }}</span
               >
@@ -331,6 +333,8 @@
             </mat-expansion-panel-header>
 
             <p>
+              <span><b>{{responseHeaders['URL']}} {{responseHeaders['Status Code']}}</b></span>
+              <br>
               <span *ngFor="let h of responseHeaders | keyvalue"
                 ><b>{{ h.key }}:</b> {{ h.value }}</span
               >
