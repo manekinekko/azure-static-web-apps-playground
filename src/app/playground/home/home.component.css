@@ -70,7 +70,7 @@ section {
   position: absolute;
   transform: rotate(-90deg);
   top: 50%;
-  left: 532px;
+  left: 517px;
   border: 1px solid #e0e0e0;
   background: white;
   padding: 10px 30px;
@@ -78,6 +78,7 @@ section {
   color: black;
   cursor: pointer;
   border-top: white;
+  width: 200px;
 }
 
 .content {
@@ -168,7 +169,7 @@ mat-chip.mat-chip {
 }
 .mat-chip.mat-standard-chip.mat-chip-selected.mat-accent {
   background-color: #212126;
-    color: #fff;
+  color: #fff;
 }
 
 code {
