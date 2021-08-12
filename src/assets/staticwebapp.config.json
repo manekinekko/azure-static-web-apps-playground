@@ -1,6 +1,7 @@
 {
-  "navigationFallback": {
-    "rewrite": "index.html",
-    "exclude": ["/*.{ico,js,map,css}"]
+  "responseOverrides": {
+    "404": {
+      "redirect": "/assets/error.html"
+    }
   }
 }
